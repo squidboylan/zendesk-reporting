@@ -62,7 +62,7 @@ if not end_time:
             title = unicodedata.normalize('NFKC', article['title']).encode('ascii',
                     'ignore')
             print('"' + title + '" created at ' + article['created_at'] + ' ' +
-                    article['url'])
+                    article['html_url'])
 
 else:
     for article in articles['articles']:
@@ -73,4 +73,4 @@ else:
             title = unicodedata.normalize('NFKC', article['title']).encode('ascii',
                     'ignore')
             print('"' + title + '" created at ' + article['created_at'] + ' ' +
-                    article['url'])
+                    article['html_url'])
