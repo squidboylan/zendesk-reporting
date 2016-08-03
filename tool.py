@@ -28,8 +28,6 @@ if args.end_date:
 else:
     end_time = None
 
-print(end_time)
-
 try:
     zendesk_url = env['ZENDESK_URL']
 except:
@@ -63,7 +61,8 @@ if not end_time:
         if creation_time > start_time:
             title = unicodedata.normalize('NFKC', article['title']).encode('ascii',
                     'ignore')
-            print('"' + title + '" created at ' + article['created_at'])
+            print('"' + title + '" created at ' + article['created_at'] + ' ' +
+                    article['url'])
 
 else:
     for article in articles['articles']:
@@ -73,4 +72,5 @@ else:
         if creation_time > start_time and creation_time < end_time:
             title = unicodedata.normalize('NFKC', article['title']).encode('ascii',
                     'ignore')
-            print('"' + title + '" created at ' + article['created_at'])
+            print('"' + title + '" created at ' + article['created_at'] + ' ' +
+                    article['url'])
