@@ -4,20 +4,31 @@ import os, sys
 from zendeskhc import HelpCenter
 import codecs
 import unicodedata
+from datetime import datetime
 
 env = os.environ
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('date', type=str,
+parser.add_argument('start_date', type=str,
                     help='start date in the format YYYY-MM-DD')
+
+parser.add_argument('--end_date', '-e', dest='end_date', type=str,
+                    help='end date in the format YYYY-MM-DD')
 
 parser.add_argument('categories', metavar='categories', type=int, nargs='+',
                     help='list of categories to check')
 
 args = parser.parse_args()
 
-start_time = args.date.split('-')
+start_time = datetime.strptime(args.start_date, '%Y-%m-%d')
+
+if args.end_date:
+    end_time = datetime.strptime(args.end_date, '%Y-%m-%d')
+else:
+    end_time = None
+
+print(end_time)
 
 try:
     zendesk_url = env['ZENDESK_URL']
@@ -44,12 +55,22 @@ for i in args.categories:
     else:
         articles['articles'] = articles['articles'] + temp['articles']
 
-for article in articles['articles']:
-    creation_time = article['created_at']
-    creation_time = creation_time.split('T')[0].split('-')
-    if int(creation_time[0]) - int(start_time[0]) >= 0:
-        if int(creation_time[1]) - int(start_time[1]) >= 0:
-            if int(creation_time[2]) - int(start_time[2]) >= 0:
-                title = unicodedata.normalize('NFKC', article['title']).encode('ascii',
-                        'ignore')
-                print('"' + title + '" created at ' + article['created_at'])
+if not end_time:
+    for article in articles['articles']:
+        creation_time = article['created_at']
+        creation_time = creation_time.split('T')[0]
+        creation_time = datetime.strptime(creation_time, '%Y-%m-%d')
+        if creation_time > start_time:
+            title = unicodedata.normalize('NFKC', article['title']).encode('ascii',
+                    'ignore')
+            print('"' + title + '" created at ' + article['created_at'])
+
+else:
+    for article in articles['articles']:
+        creation_time = article['created_at']
+        creation_time = creation_time.split('T')[0]
+        creation_time = datetime.strptime(creation_time, '%Y-%m-%d')
+        if creation_time > start_time and creation_time < end_time:
+            title = unicodedata.normalize('NFKC', article['title']).encode('ascii',
+                    'ignore')
+            print('"' + title + '" created at ' + article['created_at'])
