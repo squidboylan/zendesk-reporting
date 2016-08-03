@@ -13,6 +13,9 @@ To install dependencies
 
     $ virtualenv venv && . venv/bin/activate && pip install -r requirements.txt
 
+You should also install the 'ndg-httpsclient' package to get rid of the
+"Insecure Platform" warnings, but it is not required.
+
 Environment variables to set:
 * ZENDESK_URL: Should be set to the domain of your zendesk site
     * Looks something like "https://example.zendesk.com"
